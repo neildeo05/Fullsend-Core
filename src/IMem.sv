@@ -2,18 +2,18 @@
 
 
 module IMem (address, read_out);
-   input logic [5:0] address;
+   input logic [31:0] address;
    output logic [31:0] read_out;
 
    // 128 instruction maximum
-   logic [31:0]        imem [128:0];
+   logic [31:0]        imem [2047:0];
 
    //NOT SYNTHESIZEABLE
 
    initial begin
       $readmemh("../software/main.hex", imem);
    end
-   assign read_out = imem[address];
+   assign read_out = imem[address-1];
 
    
    
