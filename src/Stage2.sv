@@ -23,6 +23,7 @@ module Stage2 (clk, reset, if_id_ir, if_id_npc, id_ex);
          id_ex[2] <= if_id_npc;
          id_ex[3] <= if_id_ir;
          id_ex[4] <= $signed(if_id_ir[31:20]);
+         
       end
       
       

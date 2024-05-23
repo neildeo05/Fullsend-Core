@@ -1,4 +1,4 @@
-module DMem(clk, address, in, out, en, r_w);
+module DMem(clk, address, in, out, en, r_w, dmem);
    input logic clk;
    
    input logic [31:0] in;
@@ -8,8 +8,7 @@ module DMem(clk, address, in, out, en, r_w);
    input logic        r_w;
    output logic [31:0] out;
    
-   logic [31:0]        dmem [2047:0];
-   assign dmem[1] = 69;
+   output logic [31:0]        dmem [2047:0];
    
 
    always @(posedge clk) begin

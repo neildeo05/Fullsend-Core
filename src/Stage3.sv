@@ -1,8 +1,10 @@
-module Stage3(clk, reset, branch_inst, reg_reg_inst, id_ex_a, id_ex_b, id_ex_npc, id_ex_ir, id_ex_imm, alu_op, ex_mem);
+module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, id_ex_a, id_ex_b, id_ex_npc, id_ex_ir, id_ex_imm, alu_op, ex_mem);
    input logic clk;
    input logic reset;
    input logic branch_inst;
    input logic reg_reg_inst;
+   input logic ex_load_inst;
+   input logic ex_reg_dest;
    input logic [31:0] id_ex_a;
    input logic [31:0] id_ex_b;
    input logic [31:0] id_ex_npc;
@@ -21,7 +23,13 @@ module Stage3(clk, reset, branch_inst, reg_reg_inst, id_ex_a, id_ex_b, id_ex_npc
          alu_b = id_ex_b;
       end
       else begin
-         alu_b = id_ex_imm;
+         if(ex_load_inst & ex_reg_dest) begin
+            // store inst has different immediate
+            alu_b = {id_ex_ir[31:25], id_ex_ir[11:7]};
+         end
+         else begin
+            alu_b = id_ex_imm;
+         end
       end
    end
    ALU alu(id_ex_a, alu_b, alu_op, alu_out);

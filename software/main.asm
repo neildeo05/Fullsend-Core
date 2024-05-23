@@ -10,9 +10,14 @@ _boot:                    /* x0  = 0    0x000 */
     nop
     nop
     nop
+    sw x1, 9(x0)
+    nop
+    nop
+    nop
+    nop
     add x5, x6, x7
     sub x8, x6, x7
-    lw  x2, 1(x0) /* x2 <- mem[1] */ 
+    lw  x2, 9(x0) /* x2 <- mem[1] */
     nop
     nop
     nop

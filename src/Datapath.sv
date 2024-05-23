@@ -11,19 +11,20 @@
   - mux to choose which part of IR is the correct reg_dest (control second wb mux) (reg_reg ALU vs ALU immediate/Load)
  
  */
-module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_inst, reg_reg_inst, load_inst, reg_dest, alu_op, reg_array);
+module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, load_inst, reg_dest, alu_op, reg_array, dmem);
    input logic clk;
    input logic reset;
    input logic branch_inst;
    input logic reg_reg_inst;
    input logic load_inst;
    input logic reg_dest;
+   input logic ex_load_inst;
+   input logic ex_reg_dest;
    input logic [3:0] alu_op;
    output logic [6:0] current_opcode;
    output logic [3:0] current_func;
    output logic [31:0] reg_array [31:0];
-   
-   
+   output logic [31:0] dmem [2047:0];
    
    // These two come from EX/MEM
    logic branch_taken;
@@ -38,8 +39,8 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    //ir, cond, alu_output, b-register
    logic [31:0] ex_mem[3:0]; 
 
-   // ir, alu_output, lmd, load_inst (for wb)
-   logic [31:0] mem_wb [3:0];
+   // ir, alu_output, lmd, load_inst, reg_dest
+   logic [31:0] mem_wb [4:0];
    
 
    
@@ -56,12 +57,36 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    
    Stage1 s1 (clk, reset, ex_mem[1], ex_mem[2], if_id);
    Stage2 s2 (clk, reset, if_id[0], if_id[1], id_ex);
-   Stage3 s3 (clk, reset, branch_inst, reg_reg_inst, id_ex[0], id_ex[1], id_ex[2], id_ex[3], id_ex[4], alu_op, ex_mem);
-   Stage4 s4 (clk, reset, load_inst, ex_mem[0], ex_mem[2], ex_mem[3], mem_wb);
+   Stage3 s3 (clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, id_ex[0], id_ex[1], id_ex[2], id_ex[3], id_ex[4], alu_op, ex_mem);
+   Stage4 s4 (clk, reset, load_inst, reg_dest, ex_mem[0], ex_mem[2], ex_mem[3], mem_wb, dmem);
+
+   logic [31:0] write_back;
+   logic        enable;
+   
+   always_comb begin
+      if(mem_wb[3] == 0) begin
+         // not a load instruction, so the output is the alu_output
+         write_back = mem_wb[1];
+         enable = 0;
+      end
+      else begin
+         if(mem_wb[4] == 1) begin
+            // store instruction
+            write_back = 0;
+            enable = 1;
+         end
+         else begin
+            write_back = mem_wb[3];
+            enable = 0;
+         end
+      end
+      
+   end
    
    
    
-   Regfile regs(clk, reset, if_id[0][19:15], id_ex[0], if_id[0][24:20], id_ex[1], mem_wb[0][11:7], (mem_wb[3] == 0) ? mem_wb[1] : mem_wb[2], reg_r_w, reg_array);
+   
+   Regfile regs(clk, reset, enable, if_id[0][19:15], id_ex[0], if_id[0][24:20], id_ex[1], mem_wb[0][11:7], (mem_wb[3] == 0) ? mem_wb[1] : mem_wb[2], reg_r_w, reg_array);
    
    
    

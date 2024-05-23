@@ -5,7 +5,7 @@
  Or -> 10
  AND -> 11
  */
-module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg_inst, load_inst, reg_dest, alu_op);
+module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, load_inst, reg_dest, alu_op);
    input logic clk;
    input logic reset;
    input logic [6:0] current_opcode;
@@ -15,7 +15,8 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
    output logic load_inst;
    output logic reg_dest;
    output logic [3:0] alu_op;
-   logic              delayed_load_inst;
+   output logic       ex_load_inst;
+   output logic       ex_reg_dest;
    
    /*
     Instructions
@@ -42,7 +43,8 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
    
    
    always @(posedge clk) begin
-      load_inst <= delayed_load_inst;
+      load_inst <= ex_load_inst;
+      reg_dest <=  ex_reg_dest;
    end
    
    always_comb begin
@@ -54,12 +56,12 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
            2'b00: begin
               // reg reg load
               // reg reg loads are basically immediate ops with a constant alu_op
-              branch_inst = 0; reg_reg_inst = 0; delayed_load_inst = 1; reg_dest = 0; alu_op = 4'b0001; //always an add
+              branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 1; ex_reg_dest = 0; alu_op = 4'b0001; //always an add
            end
            2'b01: begin
               // immediate
 //              $display("immediate %b %b", current_opcode, current_func);
-              branch_inst = 0; reg_reg_inst = 0; delayed_load_inst = 0; reg_dest = 0;
+              branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0;
               case(current_func[2:0])
                 3'b000: begin
                    // ADD
@@ -104,13 +106,13 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
               
            end
            2'b10: begin
-              // store 
-              branch_inst = 0; reg_reg_inst = 0; delayed_load_inst = 1; reg_dest = 0; alu_op = 4'b0000;
+              // store (load instruction, with a reg_dest of 1 (doesn't wb)
+              branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 1; ex_reg_dest = 1; alu_op = 4'b0001;
            end
            2'b11: begin
               // reg reg arith
 //              $display("reg reg arith %b %b", current_opcode, current_func);
-              branch_inst = 0; reg_reg_inst = 1; delayed_load_inst = 0; reg_dest = 0;
+              branch_inst = 0; reg_reg_inst = 1; ex_load_inst = 0; ex_reg_dest = 0;
               case (current_func)
                 4'b0000: alu_op = 4'b0001;
                 4'b1000: alu_op = 4'b0010;
@@ -129,7 +131,7 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
       end // if (opcode[0] & opcode[1] == 1)
       else begin
          // illegal instruction or nop
-         branch_inst = 0;reg_reg_inst = 0; delayed_load_inst = 0; reg_dest = 0; alu_op = 4'b0000;
+         branch_inst = 0;reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b0000;
       end // else: !if((current_opcode[0] & current_opcode[1]) == 1)
       
    end

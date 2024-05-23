@@ -1,6 +1,7 @@
-module Regfile (clk, reset, reg_a, ra_data, reg_b, rb_data, reg_wa, wa_data, reg_r_w, reg_array);
+module Regfile (clk, reset, neg_enable, reg_a, ra_data, reg_b, rb_data, reg_wa, wa_data, reg_r_w, reg_array);
    input logic clk;
    input logic reset;
+   input logic neg_enable;
 
    input logic [4:0] reg_a;
    input logic [4:0] reg_b;
@@ -24,9 +25,12 @@ module Regfile (clk, reset, reg_a, ra_data, reg_b, rb_data, reg_wa, wa_data, reg
          rb_data <= 0;
       end
       else begin
-         ra_data <= reg_array[reg_a];
-         rb_data <= reg_array[reg_b];
-         reg_array[reg_wa] <= wa_data;
+         if(!neg_enable) begin
+           ra_data <= reg_array[reg_a];
+            rb_data <= reg_array[reg_b];
+            reg_array[reg_wa] <= wa_data;
+         end
+         
       end
       
       
