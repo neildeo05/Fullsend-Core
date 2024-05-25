@@ -1,27 +1,12 @@
 # Fullsend - A RISC-V Core
 
 
-## Running on an ELF executable
-1. C++ file reads the ELF executable, passes it off to testbench functions
-2. Verilator testbench loads instructions into "RAM"
-3. Current executable is loaded into ICache
-
-## Features
-
-1. Implements RV32IMF
-2. Pipelined with its own branch unit (doesn't predict)
-3. Built initially w/ chipyard, and then moved out to Orchestra
-  - This means no memory subsystem (in the beginning). But when we move to orchestra, create a memory subsystem
-4. Potentially OoO and Superscalar (because more instructions the better honestly)
+- [x] RV32I (minus branches)
+- [x] Pipeline Staling
+- [ ] Pipeline forwarding
+- [ ] Caches?
+- [ ] Branches
 
 
-## Future Features
-
-1. Vector unit that implements V extension
-2. Superscalar (dual-issue)
-3. Speculative Execution
-
-
-## Future FUTURE features
-1. OoO execution
-2. SoC integration
+## Issue
+The regfile writes on the rising edge and reads on the falling edge. Thus, in order to properly implement stalling, I made the regfile's input be ID/EX's RS1 and RS2, not IF/ID's RS1 and RS2. I do not know if this will cause problems down the line but it is working so far
