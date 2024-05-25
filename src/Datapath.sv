@@ -54,9 +54,12 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    logic [4:0] reg_wa;
    logic [31:0] wa_data;
    logic       reg_r_w;
+   logic       hazard;
+   logic [1:0] stall_counter;
    
-   Stage1 s1 (clk, reset, ex_mem[1], ex_mem[2], if_id);
-   Stage2 s2 (clk, reset, if_id[0], if_id[1], id_ex);
+   HazardUnit hu(id_ex[3], if_id[0], hazard, stall_counter);
+   Stage1 s1 (clk, reset, ex_mem[1], ex_mem[2], if_id, hazard, stall_counter);
+   Stage2 s2 (clk, reset, if_id[0], if_id[1], id_ex, hazard);
    Stage3 s3 (clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, id_ex[0], id_ex[1], id_ex[2], id_ex[3], id_ex[4], alu_op, ex_mem);
    Stage4 s4 (clk, reset, load_inst, reg_dest, ex_mem[0], ex_mem[2], ex_mem[3], mem_wb, dmem);
 
@@ -86,7 +89,7 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    
    
    
-   Regfile regs(clk, reset, enable, if_id[0][19:15], id_ex[0], if_id[0][24:20], id_ex[1], mem_wb[0][11:7], (mem_wb[3] == 0) ? mem_wb[1] : mem_wb[2], reg_r_w, reg_array);
+   Regfile regs(clk, reset, enable, id_ex[3][19:15], id_ex[0], id_ex[3][24:20], id_ex[1], mem_wb[0][11:7], (mem_wb[3] == 0) ? mem_wb[1] : mem_wb[2], reg_r_w, reg_array);
    
    
    

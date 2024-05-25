@@ -3,6 +3,12 @@
 core:
 	verilator -I../src/ -Wall -Wno-fatal --trace --cc --exe --build CoreTest.cpp Core.sv
 	./obj_dir/VCore
+
+.PHONY: regfile
+
+regfile:
+	verilator -I../src/ -Wall -Wno-fatal --trace --cc --exe --build RegfileTest.cpp Regfile.sv
+	./obj_dir/VRegfile
 .PHONY: datapath
 
 datapath:

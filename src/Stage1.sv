@@ -1,9 +1,10 @@
 // branch_cond corresponds to EX/MEM.cond
 // pc_offfset_branch corresponds to EX/MEM.ALUOutput
-module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id);
+module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id, hazard, stall_counter);
    input logic clk;
    input logic reset;
-   
+   input logic hazard;
+   output logic [1:0] stall_counter;
    input logic [31:0] pc_offset_branch;
    input logic        branch_cond;
    logic [31:0] pc;
@@ -23,6 +24,13 @@ module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id);
          if(branch_cond) begin
             npc <= pc_offset_branch;
             pc <= pc_offset_branch;
+         end
+         else if(hazard) begin
+            // If a hazard, keep recirculating this inst
+            $display("HAZARD");
+            npc <= npc;
+            pc <= pc;
+            stall_counter <= stall_counter + 1;
          end
          else begin
             npc <= npc + 1;

@@ -1,6 +1,8 @@
-module Stage2 (clk, reset, if_id_ir, if_id_npc, id_ex);
+module Stage2 (clk, reset, if_id_ir, if_id_npc, id_ex, hazard);
    input logic clk;
    input logic reset;
+   input logic hazard;
+   
 
    input logic [31:0] if_id_ir;
    input logic [31:0] if_id_npc;
@@ -17,6 +19,11 @@ module Stage2 (clk, reset, if_id_ir, if_id_npc, id_ex);
          id_ex[2] <= 0;
          id_ex[3] <= 0;
          id_ex[4] <= 0;
+      end
+      else if (hazard) begin
+         // Dispatch No-ops
+         id_ex[4] <= 0;
+         id_ex[3] <= 0;
       end
       else begin
          

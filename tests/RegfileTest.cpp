@@ -1,20 +1,18 @@
 #include <stdlib.h>
-#include <iomanip>
 #include <stdint.h>
 #include <string>
 #include <iostream>
 #include <bitset>
 #include "verilated.h"
-#include "VCore.h"
+#include "VRegfile.h"
 #include "tb.hpp"
 
-#define MAX_TIME 50
+#define MAX_TIME 1
 
 using namespace std;
 
 int main() { 
-  printf("\n\n\n");
-  FILE* f = fopen("../software/test.asm", "r");
+  FILE* f = fopen("../software/main.asm", "r");
   char c;
   c = fgetc(f);
   while(c != EOF) {
@@ -23,17 +21,18 @@ int main() {
   }
   fclose(f);
   printf("\n\n\n");
-  TB<VCore>* tb = new TB<VCore>(MAX_TIME);
+  TB<VRegfile>* tb = new TB<VRegfile>(MAX_TIME);
 
   tb->start_trace("waveform.vcd");
   while (tb->should_tick()) {
+    tb->to->reg_a = 3;
+    tb->to->reg_wa = 3;
+    tb->to->wa_data = 69;
     tb->tick();
+    cout << tb->to->ra_data << endl;
   }
   for(int i = 0; i <= 31; i++) {
-    cout << 'x' << i << ": " << static_cast<int32_t>(tb->to->reg_array[i]) << endl;
-  }
-  for(int i = 0; i <= 10; i++) {
-    cout << "mem[" << i << "]: " << static_cast<int32_t>(tb->to->dmem[i]) << endl;
+    cout << "x" << i << ": " << tb->to->reg_array[i] << endl;
   }
 
   tb->close_trace();

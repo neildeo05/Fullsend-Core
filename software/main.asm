@@ -2,34 +2,20 @@
 .text
 
 _boot:                    /* x0  = 0    0x000 */
-    /* Test ADDI */
+   lw x1, 5(x0)
+   lw x2, 5(x0)
+   add x3, x1, x2
+   
+
+
+/* Forwarding Example 1 
     addi x6, x0, 6
-    addi x7, x0, 7
-    addi x1 , x0,   -1000  /* x1  = 1000 0x3E8 */
-    nop
-    nop
-    nop
-    nop
-    sw x1, 9(x0)
-    nop
-    nop
-    nop
-    nop
-    add x5, x6, x7
-    sub x8, x6, x7
-    lw  x2, 9(x0) /* x2 <- mem[1] */
-    nop
-    nop
-    nop
-    nop
-    add x4, x2, x6
-    nop
-    nop
-    nop
-    nop
-    nop
-    add x4, x4, x7 
-    nop
-    nop
-    nop
-    nop
+    addi x7, x6, 1 */
+
+/*
+    Forwarding Example 2
+    addi x1, x0, 1
+    lw x4, 0(x1)
+    sw x4, 12(x1) */
+
+
