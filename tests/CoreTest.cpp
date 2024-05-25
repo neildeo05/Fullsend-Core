@@ -8,13 +8,13 @@
 #include "VCore.h"
 #include "tb.hpp"
 
-#define MAX_TIME 50
+#define MAX_TIME 40
 
 using namespace std;
 
 int main() { 
   printf("\n\n\n");
-  FILE* f = fopen("../software/test.asm", "r");
+  FILE* f = fopen("../software/main.asm", "r");
   char c;
   c = fgetc(f);
   while(c != EOF) {

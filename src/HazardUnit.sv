@@ -22,7 +22,7 @@ module HazardUnit(id_ex_ir, if_id_ir, hazard, stall_counter);
       else if(((id_ex_ir[5] | id_ex_ir[4]) == 0)) begin
          if(id_ex_ir[11:7] == if_id_ir[19:15]) begin
             if(!(if_id_ir[19:15] == 0)) begin
-               $display("%b %b -> HAZARD DETECTED", id_ex_ir[6:0], if_id_ir[6:0]);
+//               $display("%b %b -> HAZARD DETECTED", id_ex_ir[6:0], if_id_ir[6:0]);
                stall = 1;
             end
             else stall = 0;
@@ -30,7 +30,7 @@ module HazardUnit(id_ex_ir, if_id_ir, hazard, stall_counter);
          // Load Interlock Hazard Case 2
          else if((id_ex_ir[11:7] == if_id_ir[24:20]) & (if_id_ir[5] & if_id_ir[4]) == 1) begin
             if(!(if_id_ir[24:20] == 0)) begin
-               $display("HAZARD DETECTED");
+//               $display("HAZARD DETECTED");
                stall = 1;
             end
             else stall = 0;
