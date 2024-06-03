@@ -17,7 +17,6 @@ module Regfile (clk, reset, neg_enable, reg_a, ra_data, reg_b, rb_data, reg_wa, 
    assign reg_array[0] = 0;
    
    
-   
 
    always @(posedge clk, negedge clk) begin
       if(reset) begin

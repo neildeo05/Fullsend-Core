@@ -33,6 +33,7 @@ module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id, hazard, stall_c
             stall_counter <= stall_counter + 1;
          end
          else begin
+            stall_counter <= 0;
             npc <= npc + 1;
             pc <= pc + 1;
          end

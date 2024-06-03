@@ -7,12 +7,12 @@
 #include "VRegfile.h"
 #include "tb.hpp"
 
-#define MAX_TIME 1
+#define MAX_TIME 4
 
 using namespace std;
 
 int main() { 
-  FILE* f = fopen("../software/main.asm", "r");
+  FILE* f = fopen("../software/simple.asm", "r");
   char c;
   c = fgetc(f);
   while(c != EOF) {

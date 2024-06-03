@@ -9,9 +9,6 @@ module DMem(clk, address, in, out, en, r_w, dmem);
    output logic [31:0] out;
    
    output logic [31:0]        dmem [2047:0];
-   assign dmem[5] = 5;
-   assign dmem[6] = 6;
-   assign dmem[7] = 7;
    
    
 
