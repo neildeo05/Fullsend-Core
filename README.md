@@ -3,8 +3,9 @@
 
 - [x] RV32I (minus branches)
 - [x] Pipeline Staling
-- [ ] Pipeline forwarding
-- [ ] Caches?
+- [x] Pipeline forwarding
+- [ ] Full RV32IM support
+- [ ] Caches
 - [ ] Branches
 
 
