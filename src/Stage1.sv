@@ -27,7 +27,6 @@ module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id, hazard, stall_c
          end
          else if(hazard) begin
             // If a hazard, keep recirculating this inst
-//            $display("HAZARD");
             npc <= npc;
             pc <= pc;
             stall_counter <= stall_counter + 1;

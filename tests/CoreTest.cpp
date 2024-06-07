@@ -14,7 +14,7 @@ using namespace std;
 
 int main() { 
   printf("\n\n\n");
-  FILE* f = fopen("../software/forwarding.asm", "r");
+  FILE* f = fopen("../software/bigtest.asm", "r");
   char c;
   c = fgetc(f);
   while(c != EOF) {

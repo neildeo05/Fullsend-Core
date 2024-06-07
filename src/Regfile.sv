@@ -16,21 +16,20 @@ module Regfile (clk, reset, neg_enable, reg_a, ra_data, reg_b, rb_data, reg_wa, 
    // constant first register 
    assign reg_array[0] = 0;
    
-   
 
    always @(posedge clk, negedge clk) begin
       if(reset) begin
          ra_data <= 0;
          rb_data <= 0;
       end
-      else if (!neg_enable) begin
-         if(clk) begin
+      if(clk) begin
+         if(!neg_enable) begin
             reg_array[reg_wa] <= wa_data;
          end
-         else begin
-            ra_data <= reg_array[reg_a];
-            rb_data <= reg_array[reg_b];
-         end
+      end
+      else begin
+         ra_data <= reg_array[reg_a];
+         rb_data <= reg_array[reg_b];
       end
    end
    

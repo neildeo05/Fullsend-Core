@@ -1,4 +1,4 @@
-module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, id_ex_a, id_ex_b, id_ex_npc, id_ex_ir, id_ex_imm, alu_op, ex_mem, f_rs1, f_rs2, fwd_1, fwd_2, f_en);
+module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, id_ex_a, id_ex_b, id_ex_npc, id_ex_ir, id_ex_imm, alu_op, ex_mem, f_rs1, f_rs2, fwd_1, fwd_2,sb_fwd_2,f_en);
    input logic clk;
    input logic reset;
    input logic branch_inst;
@@ -13,9 +13,10 @@ module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, 
    input logic [31:0] id_ex_imm;
    input logic [3:0]   alu_op;
    input logic         f_rs1 [1:0];
-   input logic         f_rs2 [1:0];
+   input logic         f_rs2 [3:0];
    input logic [31:0]  fwd_1;
    input logic [31:0]  fwd_2;
+   input logic [31:0]  sb_fwd_2;
    
    
    output logic [31:0] ex_mem [3:0];
@@ -54,6 +55,7 @@ module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, 
          else begin
             if(ex_load_inst & ex_reg_dest) begin
                // store inst has different immediate
+               // Can do store bypassing from here
                alu_b = {id_ex_ir[31:25], id_ex_ir[11:7]};
             end
             else begin
@@ -63,6 +65,8 @@ module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, 
       end // else: !if(f_rs2[1])
       
    end
+   
+   
    ALU alu(alu_a, alu_b, alu_op, alu_out);
    
    always @(posedge clk) begin

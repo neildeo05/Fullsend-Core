@@ -11,6 +11,7 @@ module DMem(clk, address, in, out, en, r_w, dmem);
    output logic [31:0]        dmem [2047:0];
    
    
+   
 
    always @(posedge clk) begin
       if(en) begin
