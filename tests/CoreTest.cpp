@@ -32,7 +32,7 @@ int main() {
   for(int i = 0; i <= 31; i++) {
     cout << 'x' << i << ": " << static_cast<int32_t>(tb->to->reg_array[i]) << endl;
   }
-  for(int i = 0; i <= 20; i++) {
+  for(int i = 0; i <= 31; i++) {
     cout << "mem[" << i << "]: " << static_cast<int32_t>(tb->to->dmem[i]) << endl;
   }
 
