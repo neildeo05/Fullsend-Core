@@ -18,12 +18,12 @@ module ForwardingUnit(mem_wb_ir, ex_mem_ir, id_ex_ir, ex_aluout, mem_aluout, mem
    logic [6:0] mem_op;
    logic [6:0] ex_op;
    logic [6:0] id_op;
-   logic [3:0] ex_rd;
-   logic [3:0] mem_rd;
-   logic [3:0] id_rs1;
-   logic [3:0] id_rs2;
-   logic [3:0] ex_rs1;
-   logic [3:0] ex_rs2;
+   logic [4:0] ex_rd;
+   logic [4:0] mem_rd;
+   logic [4:0] id_rs1;
+   logic [4:0] id_rs2;
+   logic [4:0] ex_rs1;
+   logic [4:0] ex_rs2;
    logic ex_rs1_forward;
    logic ex_rs2_forward;
    logic mem_rs1_forward;

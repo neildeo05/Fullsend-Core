@@ -1,4 +1,4 @@
-module Stage4(clk, reset, load_inst, reg_dest, ex_mem_ir, ex_mem_alu_output, ex_mem_b, mem_wb, sb_en, sb_fwd, dmem);
+module Stage4(clk, reset, load_inst, reg_dest, ex_mem_ir, ex_mem_alu_output, ex_mem_b, mem_wb, sb_en, sb_fwd, mem_address, mem_input, /*mem_output, */mem_enable, mem_r_w);
    input logic clk;
    input logic reset;
    input logic load_inst;
@@ -10,7 +10,17 @@ module Stage4(clk, reset, load_inst, reg_dest, ex_mem_ir, ex_mem_alu_output, ex_
    input logic [31:0] sb_fwd;
    
    output logic [31:0] mem_wb [4:0];
-   output logic [31:0] dmem [2047:0];
+   output logic [31:0] mem_address;
+   output logic [31:0] mem_input;
+//   output logic [31:0] mem_output;
+   output logic        mem_enable;
+   output logic        mem_r_w;
+   assign mem_address = ex_mem_alu_output;
+   assign mem_input = (e_sb_en) ? e_sb_fwd : reg_b_in;
+//   assign mem_output = mem_wb[2];
+   assign mem_enable = load_inst;
+   assign mem_r_w = reg_dest;
+   
    logic [31:0]        reg_b_in;
    logic [31:0]        e_sb_fwd;
    logic               e_sb_en;
@@ -21,7 +31,7 @@ module Stage4(clk, reset, load_inst, reg_dest, ex_mem_ir, ex_mem_alu_output, ex_
    end
    
    
-   DMem dm(clk, ex_mem_alu_output, (e_sb_en) ? e_sb_fwd : reg_b_in, mem_wb[2], load_inst, reg_dest, dmem);
+   
    
    always @(posedge clk) begin
       e_sb_en <= sb_en[3];

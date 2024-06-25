@@ -11,6 +11,11 @@ module Stage2 (clk, reset, if_id_ir, if_id_npc, id_ex, hazard);
    
    
    output logic [31:0] id_ex [4:0];
+   logic               long_immediate;
+   
+   assign long_immediate = if_id_ir[2];
+
+   
    
    always @(posedge clk) begin
       if(reset) begin
@@ -29,7 +34,9 @@ module Stage2 (clk, reset, if_id_ir, if_id_npc, id_ex, hazard);
          
          id_ex[2] <= if_id_npc;
          id_ex[3] <= if_id_ir;
-         id_ex[4] <= $signed(if_id_ir[31:20]);
+         // Checking to see which immediate we need:
+         if (long_immediate) id_ex[4] <= $signed(if_id_ir[31:12]);
+         else id_ex[4] <= $signed(if_id_ir[31:20]);
          
       end
       

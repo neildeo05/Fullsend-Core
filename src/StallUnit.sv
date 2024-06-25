@@ -6,8 +6,8 @@ module StallUnit(id_ex_ir, if_id_ir, stall_counter, stall);
    input logic [31:0] if_id_ir;
    
    output logic              stall;
-   logic [3:0]               id_ex_rd;
-   logic [3:0]               if_id_rs1;
+   logic [4:0]               id_ex_rd;
+   logic [4:0]               if_id_rs1;
    assign id_ex_rd = id_ex_ir[11:7];
    assign if_id_rs1 = if_id_ir[19:15];
    

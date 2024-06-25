@@ -67,7 +67,7 @@ module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, 
    end
    
    
-   ALU alu(alu_a, alu_b, alu_op, alu_out);
+   ALU alu(id_ex_npc, alu_a, alu_b, alu_op, alu_out);
    
    always @(posedge clk) begin
       if(reset) begin

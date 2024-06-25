@@ -1,9 +1,9 @@
-module ALU(alu_a, alu_b, alu_op, alu_out);
+module ALU(pc, alu_a, alu_b, alu_op, alu_out);
+   input logic [31:0] pc;
    input logic [31:0] alu_a;
    input logic [31:0] alu_b;
    input logic [3:0]  alu_op;
    output logic [31:0] alu_out;
-
 
 
    always_comb begin
@@ -19,6 +19,8 @@ module ALU(alu_a, alu_b, alu_op, alu_out);
         4'b1001: alu_out = alu_a >>> alu_b;
         4'b1010: alu_out = (alu_a < alu_b) ? 1 : 0;
         4'b1011: alu_out = (alu_a < alu_b) ? 1 : 0;
+        4'b1100: alu_out = alu_a + (alu_b << 12);
+        4'b1101: alu_out = (pc-4) + (alu_b << 12);
         
         default: begin
            alu_out = 0;

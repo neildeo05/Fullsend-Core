@@ -32,12 +32,8 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
     10. ARITHM. SR         1001
     11. SETLT              1010
     12. SETLT(zero extend) 1011
-    
-    Branch Checkers:
-    12. EQ                 1100
-    13. NE                 1101
-    14. LT                 1110
-    15. GE                 1111
+    13. AUI                1100
+    14. AUIPC              1101
     */
 
    
@@ -61,53 +57,82 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
            2'b01: begin
               // immediate
 //              $display("immediate %b %b", current_opcode, current_func);
-              branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0;
-              case(current_func[2:0])
-                3'b000: begin
-                   // ADD
-                   alu_op = 4'b0001;
-                end
-                3'b001: begin
-                   //SLLI
-                   alu_op = 4'b0110;
-                   
-                end
-                3'b010: begin
-                   // SETLT
-                   alu_op = 4'b1010;
-                   
-                end
-                3'b011: begin
-                   // SETLT (U)
-                   alu_op = 4'b1011;
-                   
-                end
-                3'b100: begin
-                   // XOR
-                   alu_op = 4'b0011;
-                end
-                3'b101: begin
-                   // Either logical SR or arith SR
-                   if(current_func[3] == 0) alu_op = 4'b0111;
-                   else alu_op = 4'b1001;
-                end
-                3'b110: begin
-                  // OR
-                   alu_op = 4'b0100;
-                end
-                3'b111: begin
-                   // AND
-                   alu_op = 4'b0101;
-                end
-                default: begin
-                   alu_op = 4'b0000;
-                end
-              endcase // case (current_func)
-              
+              if(current_opcode[2]) begin
+                 // alu operation for AUI
+                 $display("Upper Immediate instruction");
+                 branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b1101;
+              end
+              else begin
+                 branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0;
+                 
+                 case(current_func[2:0])
+                   3'b000: begin
+                      // ADD
+                      alu_op = 4'b0001;
+                   end
+                   3'b001: begin
+                      //SLLI
+                      alu_op = 4'b0110;
+                      
+                   end
+                   3'b010: begin
+                      // SETLT
+                      alu_op = 4'b1010;
+                      
+                   end
+                   3'b011: begin
+                      // SETLT (U)
+                      alu_op = 4'b1011;
+                      
+                   end
+                   3'b100: begin
+                      // XOR
+                      alu_op = 4'b0011;
+                   end
+                   3'b101: begin
+                      // Either logical SR or arith SR
+                      if(current_func[3] == 0) alu_op = 4'b0111;
+                      else alu_op = 4'b1001;
+                   end
+                   3'b110: begin
+                      // OR
+                      alu_op = 4'b0100;
+                   end
+                   3'b111: begin
+                      // AND
+                      alu_op = 4'b0101;
+                   end
+                   default: begin
+                      alu_op = 4'b0000;
+                   end
+                 endcase // case (current_func)
+              end // else: !if(current_opcode[2])
            end
            2'b10: begin
               // store (load instruction, with a reg_dest of 1 (doesn't wb)
-              branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 1; ex_reg_dest = 1; alu_op = 4'b0001;
+              if(current_opcode[6]) begin
+                 if(current_opcode[3]) begin
+                    // jump
+                    if(current_opcode[4]) begin
+                       //jalr -> Immediate type instruction 
+                       $display("ILLEGAL: JALR NOT IMPLEMENTED YET");
+                       branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b0000;
+                    end
+                    else begin
+                       // jal
+                       branch_inst = 1; reg_reg_inst = 1; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b0001;
+                    end
+                 end
+                 else begin
+                    // branch
+                    $display("ILLEGAL: BRANCH NOT IMPLEMENTED YET");
+                 branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b0000;
+                 end
+              end
+              else begin
+                 // store
+                 branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 1; ex_reg_dest = 1; alu_op = 4'b0001;
+              end
            end
            2'b11: begin
               // reg reg arith

@@ -1,18 +1,19 @@
 // branch_cond corresponds to EX/MEM.cond
 // pc_offfset_branch corresponds to EX/MEM.ALUOutput
-module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id, hazard, stall_counter);
+module Stage1 (clk, reset, pc, curr_inst, branch_cond, pc_offset_branch, if_id, hazard, stall_counter);
    input logic clk;
    input logic reset;
    input logic hazard;
    output logic [1:0] stall_counter;
    input logic [31:0] pc_offset_branch;
+   input logic [31:0] curr_inst;
    input logic        branch_cond;
-   logic [31:0] pc;
    logic [31:0] npc;
    logic [31:0] ir;
+   output logic [31:0] pc;
    output logic [31:0] if_id [1:0];
 
-   IMem mem(pc, ir);
+   assign ir = curr_inst;
    always @(posedge clk) begin
       if (reset) begin
          pc <= 0;
@@ -33,7 +34,7 @@ module Stage1 (clk, reset, branch_cond, pc_offset_branch, if_id, hazard, stall_c
          end
          else begin
             stall_counter <= 0;
-            npc <= npc + 1;
+            npc <= npc + 4;
             pc <= pc + 1;
          end
       end

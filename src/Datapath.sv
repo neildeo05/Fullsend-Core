@@ -11,7 +11,7 @@
   - mux to choose which part of IR is the correct reg_dest (control second wb mux) (reg_reg ALU vs ALU immediate/Load)
  
  */
-module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, load_inst, reg_dest, alu_op, reg_array, dmem);
+module Datapath (clk, reset, pc, curr_inst, current_opcode, current_func, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, load_inst, reg_dest, alu_op, reg_array, mem_wb, mem_address, mem_input, mem_enable, mem_r_w);
    input logic clk;
    input logic reset;
    input logic branch_inst;
@@ -20,11 +20,13 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    input logic reg_dest;
    input logic ex_load_inst;
    input logic ex_reg_dest;
+   
    input logic [3:0] alu_op;
+   input logic [31:0] curr_inst;
+   output logic [31:0] pc;
    output logic [6:0] current_opcode;
    output logic [3:0] current_func;
    output logic [31:0] reg_array [31:0];
-   output logic [31:0] dmem [2047:0];
    
    // These two come from EX/MEM
    logic branch_taken;
@@ -40,7 +42,9 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    logic [31:0] ex_mem[3:0]; 
 
    // ir, alu_output, lmd, load_inst, reg_dest
-   logic [31:0] mem_wb [4:0];
+   
+   output logic [31:0] mem_wb [4:0];
+   
    
 
    
@@ -63,13 +67,18 @@ module Datapath (clk, reset,/* id_ex, */current_opcode, current_func, branch_ins
    logic [31:0] sb_fwd_2;
    logic        f_en;
    
+   output logic [31:0] mem_address;
+   output logic [31:0] mem_input;
+//   output logic [31:0] mem_output;
+   output logic        mem_enable;
+   output logic        mem_r_w;
    
    StallUnit su(id_ex[3], if_id[0], stall_counter, stall);
    ForwardingUnit fu(mem_wb[0], ex_mem[0], id_ex[3], ex_mem[2], mem_wb[1], mem_wb[2], f_rs1, f_rs2, fwd_1, fwd_2,sb_fwd_2, f_en);
-   Stage1 s1 (clk, reset, ex_mem[1], ex_mem[2], if_id, stall, stall_counter);
+   Stage1 s1 (clk, reset, pc, curr_inst, ex_mem[1], ex_mem[2], if_id, stall, stall_counter);
    Stage2 s2 (clk, reset, if_id[0], if_id[1], id_ex, stall);
    Stage3 s3 (clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, id_ex[0], id_ex[1], id_ex[2], id_ex[3], id_ex[4], alu_op, ex_mem, f_rs1, f_rs2, fwd_1, fwd_2, sb_fwd_2, f_en);
-   Stage4 s4 (clk, reset, load_inst, reg_dest, ex_mem[0], ex_mem[2], ex_mem[3], mem_wb, f_rs2, sb_fwd_2, dmem);
+   Stage4 s4 (clk, reset, load_inst, reg_dest, ex_mem[0], ex_mem[2], ex_mem[3], mem_wb, f_rs2, sb_fwd_2, mem_address, mem_input, mem_enable, mem_r_w);
 
    logic [31:0] write_back;
    logic        enable;
