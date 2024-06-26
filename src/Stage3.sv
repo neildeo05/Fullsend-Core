@@ -29,10 +29,7 @@ module Stage3(clk, reset, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, 
    // ID/EX.a corresponds to RS1
    // ID/EX.b corresponds to RS2
    always_comb begin
-      if(f_rs1[0]) begin
-         alu_a = fwd_1;
-      end
-      else if(f_rs1[1]) begin
+      if(f_rs1[0] | f_rs1[1]) begin
          alu_a = fwd_1;
       end
       else alu_a = id_ex_a;

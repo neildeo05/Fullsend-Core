@@ -32,9 +32,6 @@ int main() {
   for(int i = 0; i <= 31; i++) {
     cout << 'x' << i << ": " << static_cast<int32_t>(tb->to->reg_array[i]) << endl;
   }
-  for(int i = 0; i <= 31; i++) {
-    cout << "mem[" << i << "]: " << static_cast<int32_t>(tb->to->ram[i]) << endl;
-  }
   for(int i = 2048; i <= 2048 + 31; i++) {
     cout << "mem[" << i << "]: " << static_cast<int32_t>(tb->to->ram[i]) << endl;
   }

@@ -14,7 +14,7 @@ module Mem(clk, address, in, out, en, r_w, ram);
    logic [31:0] dmem[2047:0];
    output logic [31:0] out;
    output logic [31:0] ram [10239:0];
-   assign ram[2047:0] = imem;
+//   assign ram[2047:0] = imem;
    
    always @(posedge clk) begin
       if(en) begin
@@ -32,6 +32,9 @@ module Mem(clk, address, in, out, en, r_w, ram);
       $readmemh("../software/data.hex", dmem);
       for(i = 0; i < 2048; i = i+1) begin
          ram[2048+(i*4)] = dmem[i];
+      end
+      for(i = 0; i < 512; i = i+1) begin
+         ram[(i*4)] = imem[i];
       end
    end
    

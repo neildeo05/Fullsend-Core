@@ -13,7 +13,7 @@ module IMem (imem, address, read_out);
 //   initial begin
 //      $readmemh("../software/text.hex", imem);
 //   end
-   assign read_out = imem[address-1];
+   assign read_out = imem[address-4];
 
    
    

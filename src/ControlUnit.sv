@@ -34,6 +34,7 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
     12. SETLT(zero extend) 1011
     13. AUI                1100
     14. AUIPC              1101
+    15. INC_PC             1110
     */
 
    
@@ -59,7 +60,6 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
 //              $display("immediate %b %b", current_opcode, current_func);
               if(current_opcode[2]) begin
                  // alu operation for AUI
-                 $display("Upper Immediate instruction");
                  branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b1101;
               end
               else begin
@@ -120,7 +120,8 @@ module ControlUnit(clk, reset, current_opcode,current_func, branch_inst, reg_reg
                     end
                     else begin
                        // jal
-                       branch_inst = 1; reg_reg_inst = 1; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b0001;
+                       $display("ILLEGAL: JAL NOT IMPLEMENTED YET");
+                       branch_inst = 0; reg_reg_inst = 0; ex_load_inst = 0; ex_reg_dest = 0; alu_op = 4'b0000;
                     end
                  end
                  else begin

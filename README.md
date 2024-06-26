@@ -4,8 +4,10 @@
 - [x] Minimal RV32I (minus branches)
 - [x] Pipeline Staling
 - [x] Pipeline forwarding
-- [ ] Full RV32IM support (minus branches)
-- [ ] Control Unit Cleanup
+- [x] Control Unit Cleanup
+- [x] Separation of memory from core (precursor to caches)
+- [ ] Jumps
 - [ ] Caches
-- [ ] Branches
+- [ ] ASIC start
+- [ ] MANIAC vector handling
 
