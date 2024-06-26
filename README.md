@@ -6,8 +6,7 @@
 - [x] Pipeline forwarding
 - [x] Control Unit Cleanup
 - [x] Separation of memory from core (precursor to caches)
-- [ ] Jumps
 - [ ] Caches
 - [ ] ASIC start
-- [ ] MANIAC vector handling
+- [ ] vector handling with manic
 
