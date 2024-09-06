@@ -8,5 +8,5 @@
 - [x] Separation of memory from core (precursor to caches)
 - [ ] Caches
 - [ ] ASIC start
-- [ ] vector handling with manic
+- [ ] vector with RV OVI
 

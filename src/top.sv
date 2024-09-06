@@ -16,8 +16,24 @@ module top(clk, reset, reg_array, ram);
    
    output logic [31:0] ram [10239:0];
    
-   Mem memory(clk, address, in,mem_wb[2] , en, r_w, ram);
-   IMem im(ram, pc, curr_inst);
-   Core core(clk, reset, pc, curr_inst, reg_array, mem_wb, address, in, en, r_w);
+   Mem memory(.clk(clk),
+              .address(address),
+              .in(in),
+              .out(mem_wb[2]),
+              .en(en),
+              .r_w(r_w),
+              .ram(ram));
+
+   IMem im(.imem(ram), .address(pc), .read_out(curr_inst));
+   Core core(.clk(clk),
+             .reset(reset),
+             .pc(pc),
+             .curr_inst(curr_inst),
+             .reg_array(reg_array),
+             .mem_wb(mem_wb),
+             .mem_address(address),
+             .mem_input(in), 
+             .mem_enable(en),
+             .mem_r_w(r_w));
 
 endmodule; // top

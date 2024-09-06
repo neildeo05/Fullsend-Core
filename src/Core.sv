@@ -21,6 +21,7 @@ module Core (clk, reset, pc, curr_inst, reg_array, mem_wb, mem_address, mem_inpu
    output logic        mem_r_w;
    
    Datapath dp(clk, reset, pc, curr_inst, current_opcode, current_func, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, load_inst, reg_dest, alu_op, reg_array, mem_wb,mem_address, mem_input, mem_enable, mem_r_w);
+
    ControlUnit cu(clk, reset, current_opcode, current_func, branch_inst, reg_reg_inst, ex_load_inst, ex_reg_dest, load_inst, reg_dest, alu_op);
    
  
