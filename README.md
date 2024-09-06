@@ -7,6 +7,7 @@
 - [x] Control Unit Cleanup
 - [x] Separation of memory from core (precursor to caches)
 - [ ] Caches
+- [ ] Test w/ RISC-V Formal Interface
 - [ ] ASIC start
 - [ ] vector with RV OVI
 
