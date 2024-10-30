@@ -6,25 +6,7 @@ module ALU (
     input  logic [ 4:0] alu_op,
     output logic [31:0] alu_out
 );
-  typedef enum logic [4:0] {
-    NOP   = 5'b00000,
-    ADD   = 5'b00001,
-    SUB,
-    XOR,
-    OR,
-    AND,
-    SHL,
-    SHR,
-    SHLU,
-    SHRU,
-    SLT,
-    SGT,
-    AUI,
-    AUIPC,
-    MUL,
-    DIV,
-    REM
-  } alu_operation_t;
+  import inst_pkg::*;
 
   always_comb begin
     case (alu_op)
@@ -49,7 +31,7 @@ module ALU (
       // SLT
       SLT: alu_out = (alu_a < alu_b) ? 1 : 0;
       // SGT
-      SGT: alu_out = (alu_a < alu_b) ? 1 : 0;
+      SLTU: alu_out = (alu_a < alu_b) ? 1 : 0;
       // Add upper immediate
       AUI: alu_out = alu_a + (alu_b << 12);
       // Add upper immediate to PC

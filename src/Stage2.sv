@@ -6,7 +6,7 @@ module Stage2 (
     input logic [31:0] if_id_npc,
     output logic [31:0] id_ex[4:0]
 );
-  //a, b, npc, ir, imm
+  //definition of pipeline register indices: a, b, npc, ir, imm
   typedef enum int {
     A_IDX   = 0,
     B_IDX   = 1,
@@ -14,6 +14,7 @@ module Stage2 (
     IR_IDX  = 3,
     IMM_IDX = 4
   } stage_2_idx_e;
+
   logic long_immediate;
   // IR[2] contains the long_immediate bit. If it is high then the immediate is 21 bits, versus 11 bits
   assign long_immediate = if_id_ir[2];

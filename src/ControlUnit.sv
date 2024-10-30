@@ -10,8 +10,9 @@ module ControlUnit (
     output logic ex_reg_dest,
     output logic load_inst,
     output logic reg_dest,
-    output logic [3:0] alu_op
+    output logic [4:0] alu_op
 );
+  import inst_pkg::*;
 
   //MUL Instruction -> 0110011
   // Funct3 -> 0x0
@@ -65,17 +66,17 @@ module ControlUnit (
           reg_reg_inst = 0;
           ex_load_inst = 1;
           ex_reg_dest = 0;
-          alu_op = 4'b0001;  //always an add
+          alu_op = ADD;  //always an add
         end
         IMMEDIATE: begin
           // immediate
           if (current_opcode[2]) begin
-            // alu operation for AUI
+            // alu operation for AUIPC
             branch_inst = 0;
             reg_reg_inst = 0;
             ex_load_inst = 0;
             ex_reg_dest = 0;
-            alu_op = 4'b1101;
+            alu_op = AUIPC;
           end else begin
             branch_inst  = 0;
             reg_reg_inst = 0;
@@ -84,42 +85,42 @@ module ControlUnit (
             case (current_func[2:0])
               3'b000: begin
                 // ADD
-                alu_op = 4'b0001;
+                alu_op = ADD;
               end
               3'b001: begin
                 //SLLI
-                alu_op = 4'b0110;
+                alu_op = SHL;
 
               end
               3'b010: begin
                 // SETLT
-                alu_op = 4'b1010;
+                alu_op = SLT;
 
               end
               3'b011: begin
                 // SETLT (U)
-                alu_op = 4'b1011;
+                alu_op = SLTU;
 
               end
               3'b100: begin
                 // XOR
-                alu_op = 4'b0011;
+                alu_op = XOR;
               end
               3'b101: begin
                 // Either logical SR or arith SR
-                if (current_func[3] == 0) alu_op = 4'b0111;
-                else alu_op = 4'b1001;
+                if (current_func[3] == 0) alu_op = SHR;
+                else alu_op = SHRU;
               end
               3'b110: begin
                 // OR
-                alu_op = 4'b0100;
+                alu_op = OR;
               end
               3'b111: begin
                 // AND
-                alu_op = 4'b0101;
+                alu_op = AND;
               end
               default: begin
-                alu_op = 4'b0000;
+                alu_op = NOP;
               end
             endcase  // case (current_func)
           end  // else: !if(current_opcode[2])
@@ -136,7 +137,7 @@ module ControlUnit (
                 reg_reg_inst = 0;
                 ex_load_inst = 0;
                 ex_reg_dest = 0;
-                alu_op = 4'b0000;
+                alu_op = NOP;
               end else begin
                 // jal
                 $display("ILLEGAL: JAL NOT IMPLEMENTED YET");
@@ -144,7 +145,7 @@ module ControlUnit (
                 reg_reg_inst = 0;
                 ex_load_inst = 0;
                 ex_reg_dest = 0;
-                alu_op = 4'b0000;
+                alu_op = NOP;
               end
             end else begin
               // branch
@@ -153,7 +154,7 @@ module ControlUnit (
               reg_reg_inst = 0;
               ex_load_inst = 0;
               ex_reg_dest = 0;
-              alu_op = 4'b0000;
+              alu_op = NOP;
             end
           end else begin
             // store
@@ -161,7 +162,7 @@ module ControlUnit (
             reg_reg_inst = 0;
             ex_load_inst = 1;
             ex_reg_dest = 1;
-            alu_op = 4'b0001;
+            alu_op = ADD;
           end
         end
         REG_REG_ARITH: begin
@@ -176,20 +177,20 @@ module ControlUnit (
           case ({
             mul_inst, current_func
           })
-            5'b00000: alu_op = 4'b0001;
-            5'b01000: alu_op = 4'b0010;
-            5'b00001: alu_op = 4'b0110;
-            5'b00010: alu_op = 4'b1010;
-            5'b00011: alu_op = 4'b1011;
-            5'b00100: alu_op = 4'b0011;
-            5'b00101: alu_op = 4'b0111;
-            5'b01101: alu_op = 4'b1001;
-            5'b00110: alu_op = 4'b0100;
-            5'b00111: alu_op = 4'b0101;
-            5'b10000: alu_op = 4'b1110;
-            5'b10100: alu_op = 4'b1111;
+            5'b00000: alu_op = ADD;
+            5'b01000: alu_op = SUB;
+            5'b00001: alu_op = SHL;
+            5'b00010: alu_op = SLT;
+            5'b00011: alu_op = SLTU;
+            5'b00100: alu_op = XOR;
+            5'b00101: alu_op = SHR;
+            5'b01101: alu_op = SHRU;
+            5'b00110: alu_op = OR;
+            5'b00111: alu_op = AND;
+            5'b10000: alu_op = MUL;
+            5'b10100: alu_op = REM;
             // 5'b10110: alu_op = 4'bxxxx
-            default:  alu_op = 4'b0000;
+            default:  alu_op = NOP;
           endcase  // case (current_func[2:0])
         end
         default: begin
@@ -202,7 +203,7 @@ module ControlUnit (
       reg_reg_inst = 0;
       ex_load_inst = 0;
       ex_reg_dest = 0;
-      alu_op = 4'b0000;
+      alu_op = NOP;
     end  // else: !if((current_opcode[0] & current_opcode[1]) == 1)
   end
 endmodule

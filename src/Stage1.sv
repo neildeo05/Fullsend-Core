@@ -11,10 +11,12 @@ module Stage1 (
     output logic [31:0] pc,
     output logic [1:0] stall_counter
 );
+  // definition of pipeline register indices
   typedef enum int {
     IR_IDX  = 0,
     NPC_IDX = 1
   } stage_1_idx_e;
+
   logic [31:0] npc;
   logic [31:0] ir;
   assign ir = curr_inst;
