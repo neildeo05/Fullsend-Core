@@ -1,3 +1,4 @@
+// `include "inst_pkg.sv"
 module ControlUnit (
     input logic clk,
     input logic reset,
@@ -89,7 +90,7 @@ module ControlUnit (
               end
               3'b001: begin
                 //SLLI
-                alu_op = SHL;
+                alu_op = SLL;
 
               end
               3'b010: begin
@@ -108,8 +109,8 @@ module ControlUnit (
               end
               3'b101: begin
                 // Either logical SR or arith SR
-                if (current_func[3] == 0) alu_op = SHR;
-                else alu_op = SHRU;
+                if (current_func[3] == 0) alu_op = SRL;
+                else alu_op = SRA;
               end
               3'b110: begin
                 // OR
@@ -179,16 +180,16 @@ module ControlUnit (
           })
             5'b00000: alu_op = ADD;
             5'b01000: alu_op = SUB;
-            5'b00001: alu_op = SHL;
+            5'b00001: alu_op = SLL;
             5'b00010: alu_op = SLT;
             5'b00011: alu_op = SLTU;
             5'b00100: alu_op = XOR;
-            5'b00101: alu_op = SHR;
-            5'b01101: alu_op = SHRU;
+            5'b00101: alu_op = SRL;
+            5'b01101: alu_op = SRA;
             5'b00110: alu_op = OR;
             5'b00111: alu_op = AND;
             5'b10000: alu_op = MUL;
-            5'b10100: alu_op = REM;
+            5'b10100: alu_op = DIV;
             // 5'b10110: alu_op = 4'bxxxx
             default:  alu_op = NOP;
           endcase  // case (current_func[2:0])
